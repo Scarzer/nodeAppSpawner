@@ -1,14 +1,6 @@
 /*  This is a simple node script that starts a whole bunch of other programs
  *  It does this by reading a small file, shoves the 
  *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 
@@ -40,14 +32,4 @@ for(var i = 0; i < numScripts -1; i++){
 
 }
 
-/*
-var events = []
-
-for(var i = 0; i < numScripts - 1 ; i++){
-    console.log("Setting up events!") 
-    events[i] = runningScripts[i].stdout.on("data", function(data){
-        console.log("Data from: " + typeof(runningScripts[i]) + " "  + data);
-        });
-    }
-*/
 
