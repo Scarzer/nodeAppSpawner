@@ -21,7 +21,13 @@ console.log(scriptToBeRun)
 
 for(var i = 0; i < numScripts - 1 ; i++){
     // minus 1 numScripts cause last element is empty
-    
+   
+    /* Current status of this point,
+     * I am unable to get the eventhandlers to be initialized... atleast that's what I think's happening
+     * I have the json Statuses working, and it has the initalization portion of it done, but the inner 
+     * object is still empty :/ I'm missing something!!
+     *
+     */
     Statuses[scriptToBeRun[i]] = {} ;
     if(scriptToBeRun === undefined){
     console.log("Spawning: " + scriptToBeRun[i]);
