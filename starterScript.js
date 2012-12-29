@@ -21,28 +21,32 @@ console.log(scriptToBeRun)
 
 for(var i = 0; i < numScripts - 1 ; i++){
     // minus 1 numScripts cause last element is empty
-    console.log("Spawning: " + scriptToBeRun[i]);
-    Statuses[scriptToBeRun[i]] = {} ;
-    Statuses[scriptToBeRun[i]]["Name"] = scriptToBeRun[i];
-   
-    runningScripts[i] = spawn('python', ['-u' , scriptToBeRun[i] ] );
     
-    Statuses[scriptToBeRun[i]]["State"] = "Operational";
+    Statuses[scriptToBeRun[i]] = {} ;
+    if(scriptToBeRun === undefined){
+    console.log("Spawning: " + scriptToBeRun[i]);
+    Statuses[scriptToBeRun[i]]["Name"] = scriptToBeRun[i];
 
+    runningScripts[i] = spawn('python', ['-u' , scriptToBeRun[i] ] );
+    Statuses[scriptToBeRun[i]]["State"] = "Operational";
+    
+    console.log("Setting up handlers");
     runningScripts[i].stdout.on('data', function(data) {
         Statuses[scriptToBeRun[i]]["Data"] = data;
-    });
+        });
 
-    runningScripts[i].stdout.on('err', function(error) {
+    runningScripts[i].stderr.on('err', function(error) {
+        console.log(error);
         Statuses[scriptToBeRun[i]]["ErrData"] = error;
         Statuses[scriptToBeRun[i]]["State"] = "Error";
     });
-};
+}};
+
 
 setInterval(function(){
     console.log(Statuses); 
     console.log("-----------------------------------");
-    }, 5000);
+    }, 1000);
 
 
 
