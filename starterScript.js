@@ -28,8 +28,8 @@ for(var i = 0; i < numScripts - 1 ; i++){
      * object is still empty :/ I'm missing something!!
      *
      */
+    console.log(i);
     Statuses[scriptToBeRun[i]] = {} ;
-    if(scriptToBeRun === undefined){
     console.log("Spawning: " + scriptToBeRun[i]);
     Statuses[scriptToBeRun[i]]["Name"] = scriptToBeRun[i];
 
@@ -38,6 +38,9 @@ for(var i = 0; i < numScripts - 1 ; i++){
     
     console.log("Setting up handlers");
     runningScripts[i].stdout.on('data', function(data) {
+        var handler = scriptToBeRun[i];
+        console.log(handler);
+        console.log("The Data is" + data);
         Statuses[scriptToBeRun[i]]["Data"] = data;
         });
 
@@ -45,8 +48,9 @@ for(var i = 0; i < numScripts - 1 ; i++){
         console.log(error);
         Statuses[scriptToBeRun[i]]["ErrData"] = error;
         Statuses[scriptToBeRun[i]]["State"] = "Error";
-    });
-}};
+    })
+
+};
 
 
 setInterval(function(){
