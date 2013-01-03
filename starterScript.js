@@ -14,43 +14,34 @@ var fs = require('fs'),
 
 // This is supposed to be a blocking operation. Don't start anything till this finishes!
 var scriptToBeRun = fs.readFileSync('scripts.txt').toString().split("\n");
+scriptToBeRun.pop() // Get rid of the blank spot at the end
+
 var numScripts = scriptToBeRun.length;
+var index = 0
+
 console.log(numScripts);
 console.log(scriptToBeRun)
 
 
-for(var i = 0; i < numScripts - 1 ; i++){
-    // minus 1 numScripts cause last element is empty
-   
-    /* Current status of this point,
-     * I am unable to get the eventhandlers to be initialized... atleast that's what I think's happening
-     * I have the json Statuses working, and it has the initalization portion of it done, but the inner 
-     * object is still empty :/ I'm missing something!!
-     *
-     */
-    console.log(i);
-    Statuses[scriptToBeRun[i]] = {} ;
-    console.log("Spawning: " + scriptToBeRun[i]);
-    Statuses[scriptToBeRun[i]]["Name"] = scriptToBeRun[i];
+for(var i = 0; i < numScripts ; i++){
 
-    runningScripts[i] = spawn('python', ['-u' , scriptToBeRun[i] ] );
-    Statuses[scriptToBeRun[i]]["State"] = "Operational";
-    
-    console.log("Setting up handlers");
-    runningScripts[i].stdout.on('data', function(data) {
-        var handler = scriptToBeRun[i];
-        console.log(handler);
-        console.log("The Data is" + data);
-        Statuses[scriptToBeRun[i]]["Data"] = data;
-        });
+    runningScripts[i] = spawn('python', ['-u',scriptToBeRun[i] ]); //Creates the scripts
 
-    runningScripts[i].stderr.on('err', function(error) {
-        console.log(error);
-        Statuses[scriptToBeRun[i]]["ErrData"] = error;
-        Statuses[scriptToBeRun[i]]["State"] = "Error";
-    })
+    processName = scriptToBeRun[i];
 
-};
+    Statuses[scriptToBeRun[i]] = {processName : {"Name" : scriptToBeRun[i], "PID" : runningScripts[i].pid}};
+
+}
+
+for(var i = 0; i < runningScripts.length ; i++){
+        var index = i     
+        runningScripts[i].stdout.on("data", closureCallback(index, Statuses, scriptToBeRun))
+            /*
+            console.log("Index: " + index)
+            console.log("Data that we got for " + Statuses[runningScripts[index].pid]["Name"] + " is: " + data);
+        
+        })*/
+    };
 
 
 setInterval(function(){
@@ -58,6 +49,14 @@ setInterval(function(){
     console.log("-----------------------------------");
     }, 1000);
 
+function closureCallback(index, json_Stats, scriptsList){
+    return function(data){
+        console.log("Index: " + index);
+        console.log("Statuses: " + json_Stats);
+        console.log("Data: " + data);
+        console.log("Scripts: " + scriptsList[index]);
+        };
+    }
 
 
 
@@ -75,5 +74,3 @@ for(var i = 0; i < numScripts -1; i++){
         console.log("There was an error: " + err)
     });
 }
-*/
-
