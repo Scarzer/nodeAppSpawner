@@ -36,11 +36,6 @@ for(var i = 0; i < numScripts ; i++){
 for(var i = 0; i < runningScripts.length ; i++){
         var index = i     
         runningScripts[i].stdout.on("data", closureCallback(index, Statuses, scriptToBeRun))
-            /*
-            console.log("Index: " + index)
-            console.log("Data that we got for " + Statuses[runningScripts[index].pid]["Name"] + " is: " + data);
-        
-        })*/
     };
 
 
