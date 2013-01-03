@@ -47,7 +47,15 @@ setInterval(function(){
 
 
 //////////////////////////////////// FUNCTIONS ///////////////////////////////////
-
+ // All this is doing is populating the JSON that I am going to sending out. 
+// We're simply making a data packet. It might be a good idea to make this whle
+// thing into some module. That way what I'll get is a nice piece that I can
+// publish (I doubt people will really need something of this class
+//
+// Sending this to an interface might be soemething else. This makes
+// good for RO for example. And other things where you want to 
+// monitor several daemons. OH THAT'S THIS IS, A COMMUNICATOR 
+// WITH DAEMONS!!!! HOLY SHIT!!!
 
 
 function stdOutCallback(index, json_Stats, scriptsList){
@@ -64,17 +72,10 @@ function stdOutCallback(index, json_Stats, scriptsList){
     }
 
 function stdErrCallback(index, json_Stats, scriptsList){
-    return function(error){  // All this is doing is populating the JSON that I am going to sending out. 
-                             // We're simply making a data packet. It might be a good idea to make this whle
-                             // thing into some module. That way what I'll get is a nice piece that I can
-                             // publish (I doubt people will really need something of this class
-                             //
-                             // Sending this to an interface might be soemething else. This makes
-                             // good for RO for example. And other things where you want to 
-                             // monitor several daemons. OH THAT'S THIS IS, A COMMUNICATOR 
-                             // WITH DAEMONS!!!! HOLY SHIT!!!
+    return function(error){ 
         Statuses[scriptsList[index]]["Data"] = undefined;
         Statuses[scriptsList[index]]["Error"] = error.toString();
+        Statuses[scriptsList[index]]["PID"] = undefined;
         Statuses[scriptsList[index]]["Status"] = "Error Occured";
         };
     }
