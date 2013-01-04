@@ -1,16 +1,35 @@
 /*  This is a simple node script that starts a whole bunch of other programs
  *  It does this by reading a small file, shoves the 
+ *  
+ *  Current capabilities:
+ *  - Turn on arbitrary number of scripts
+ *  - Broadcast via scocket it's name, PID, and stdOut + stdErr
+ *  - Upon error, the name is marked with an error property
+ *  
+ *  Todo:
+ *  - Set up an interface
+ *  - Allow for interface to restart programs that suffered from a failure
+ *  - MAKE A FUCKING INTERFACE!!!!!
+ *
+ *  - Version 0.0.4
  *
  */
 
 
 var fs = require('fs'),
     spawn = require('child_process').spawn,
-    http = require('http')
     runningScripts= [],
+    clients = 0,
     Statuses = {};
 
+var express = require('express'),
+    app = express(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
 
+server.listen(80)
+// serve the files using express framework
+app.use(express.static(__dirname + '/public'));
 
 // This is supposed to be a blocking operation. Don't start anything till this finishes!
 var scriptToBeRun = fs.readFileSync('scripts.txt').toString().split("\n");
@@ -27,8 +46,6 @@ for(var i = 0; i < numScripts ; i++){
 
     runningScripts[i] = spawn('python', ['-u',scriptToBeRun[i] ]); //Creates the scripts
 
-    //processName = scriptToBeRun[i];
-
     Statuses[scriptToBeRun[i]] =  {"Name" : scriptToBeRun[i], "PID" : runningScripts[i].pid};
 
 }
@@ -43,7 +60,20 @@ setInterval(function(){
     console.log(Statuses); 
     console.log("-----------------------------------");
     }, 1000);
+//////////////////////////////////// SOCKETS /////////////////////////////////////
+// I think that keeping the broadcasting on the server side might be better
+// It keeps the strain off the server by just sending out a single broadcast
+// as opposed to having to deal with X requests, which could grow after a while
+// I know this won't grow, but it's still good practice!!!
 
+io.sockets.on("connection", function(socket){
+    clients++;
+    console.log("Connection was made with a client");
+    setInterval(function(){
+        socket.broadcast.volatile.emit('recall', Statuses)
+    },1000)
+    })
+    
 
 
 //////////////////////////////////// FUNCTIONS ///////////////////////////////////
@@ -60,7 +90,7 @@ setInterval(function(){
 
 function stdOutCallback(index, json_Stats, scriptsList){
     return function(data){
-        Statuses[scriptsList[index]]["Data"] = data.toString().replace('\n','');
+        Statuses[scriptsList[index]]["Data"] = data.toString().replace('\n','').trim();
         Statuses[scriptsList[index]]["Status"] = "Operational" 
 
     // Test to see how it actually works / what am I seeing
@@ -74,7 +104,7 @@ function stdOutCallback(index, json_Stats, scriptsList){
 function stdErrCallback(index, json_Stats, scriptsList){
     return function(error){ 
         Statuses[scriptsList[index]]["Data"] = undefined;
-        Statuses[scriptsList[index]]["Error"] = error.toString();
+        Statuses[scriptsList[index]]["Error"] = error.toString().trim();
         Statuses[scriptsList[index]]["PID"] = undefined;
         Statuses[scriptsList[index]]["Status"] = "Error Occured";
         };
