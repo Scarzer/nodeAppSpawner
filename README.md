@@ -1,12 +1,6 @@
 ##  Node App Spawner
 
 
-### Change Log
-#### Version 0.0.4
-Inital Commit
-
-#### Version 0.0.5
-Optimization in the socket broadcasting. Responds to number of connected clients
 
 ### Introduction
 This is a simple node script that starts a whole bunch of other programs
@@ -28,6 +22,12 @@ This is quite useful for launching/testing/watching daemon processes
 - Detect what enviroment is needed based on the extension of the file
 - MAKE A FUCKING INTERFACE!!!!
 
+### Change Log
+**Version 0.0.4
+Inital Commit
+
+**Version 0.0.5
+Optimization in the socket broadcasting. Responds to number of connected clients
 
 
 ## License 
