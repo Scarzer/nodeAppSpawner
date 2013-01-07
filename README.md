@@ -1,5 +1,13 @@
 ##  Node App Spawner
 
+
+### Change Log
+#### Version 0.0.4
+Inital Commit
+
+#### Version 0.0.5
+Optimization in the socket broadcasting. Responds to number of connected clients
+
 ### Introduction
 This is a simple node script that starts a whole bunch of other programs
 It does this by reading a small file, with the names of the scripts to be run

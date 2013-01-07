@@ -12,7 +12,18 @@
  *  - MAKE A FUCKING INTERFACE!!!!!
  *
  *  - Version 0.0.4
+ *  
+ * ------------- Change Log ---------------------------
  *
+ *
+ *  Version 0.0.4 
+ *      Initial Commit
+ *
+ *  Version 0.0.5
+ *      Optimization in socket broadcast. Only broadcasts if there is atleast
+ *      one client connected. If multiple clients are connected, broadcast 
+ *      socket is NOT duplicated. When all clients disconnect, the broadcast 
+ *      is removed
  */
 
 
@@ -57,6 +68,7 @@ for(var i = 0; i < runningScripts.length ; i++){
 
 
 setInterval(function(){
+    Statuses["Clients"] = clients
     console.log(Statuses); 
     console.log("-----------------------------------");
     }, 1000);
@@ -67,12 +79,25 @@ setInterval(function(){
 // I know this won't grow, but it's still good practice!!!
 
 io.sockets.on("connection", function(socket){
-    clients++;
-    console.log("Connection was made with a client");
-    setInterval(function(){
-        socket.broadcast.volatile.emit('recall', Statuses)
-    },1000)
-    })
+ 
+    if(clients === 0){
+        heartBeat = setInterval(function(){
+            socket.broadcast.volatile.emit('recall', Statuses)
+        },1000)
+        clients++;
+        console.log("Connection was made with a client");
+    }
+    else if(clients >= 1){
+        clients++;
+        console.log("Currently there are " + clients + " connected");
+    }
+
+     socket.on("disconnect", function(socket){
+        clients--;
+        console.log("Dropped connection with client");
+        clearInterval(heartBeat);
+    });
+});
     
 
 
