@@ -1,0 +1,17 @@
+var Scripts = { "Script1" : {
+                    "Operating" : true,
+                    "stdout" : true,
+                    "monkeyBalls" : 4,
+                    "PID" : 1123
+                    "Name" : "Script1",
+                    "notes" : "To whome it may concern"
+                    },
+                "Script2" : {
+                    "Operating" : true,
+                    "stdout" : false,
+                    "stdin"  : true,
+                    "PID"    : 4212,
+                    "Name"   : "Script2"
+                    }
+                }
+                

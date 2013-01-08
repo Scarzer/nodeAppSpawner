@@ -23,11 +23,15 @@ This is quite useful for launching/testing/watching daemon processes
 - MAKE A FUCKING INTERFACE!!!!
 
 ### Change Log
-**Version 0.0.4
-Inital Commit
+-Version 0.0.6
+Finished the interface, it more or less actually working now! 
 
-**Version 0.0.5
+-Version 0.0.5
 Optimization in the socket broadcasting. Responds to number of connected clients
+
+
+-Version 0.0.4
+Inital Commit
 
 
 ## License 
