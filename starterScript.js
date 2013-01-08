@@ -68,7 +68,7 @@ for(var i = 0; i < runningScripts.length ; i++){
 
 
 setInterval(function(){
-    Statuses["Clients"] = clients
+    //Statuses["Clients"] = clients
     console.log(Statuses); 
     console.log("-----------------------------------");
     }, 1000);
@@ -80,13 +80,15 @@ setInterval(function(){
 
 io.sockets.on("connection", function(socket){
  
+    socket.broadcast.emit('init', Statuses);
     if(clients === 0){
-        heartBeat = setInterval(function(){
-            socket.broadcast.volatile.emit('recall', Statuses)
-        },1000)
         clients++;
         console.log("Connection was made with a client");
+        var heartBeat = setInterval(function(){
+            socket.broadcast.emit('recall', Statuses)
+        },1000)
     }
+
     else if(clients >= 1){
         clients++;
         console.log("Currently there are " + clients + " connected");
@@ -95,7 +97,9 @@ io.sockets.on("connection", function(socket){
      socket.on("disconnect", function(socket){
         clients--;
         console.log("Dropped connection with client");
-        clearInterval(heartBeat);
+        if(clients === 0){
+            clearInterval(heartBeat);
+        }
     });
 });
     

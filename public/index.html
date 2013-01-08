@@ -1,18 +1,134 @@
 <html>
     <head>
         <title>Sockets!!!</title>
-    </head>
+        <style>
+            * { margin:     0;
+                padding:    0;
+                font-size:  11;
+                font-family: arial;
+                color:      #444;
+                }
+            body{
+                padding:20px;
+                }
+            h1{
+                font-size: 36;
+            }
 
-    <body></body>
+            .box {
+                list-style-type:none;
+                width:400px;
+                height:100px;
+                overflow:auto;
+                border:1px solid #999;
+                padding:20px;
+                }
+
+            .box li { 
+                border-bottom:1px solid #ccc; 
+                padding-bottom:2px;
+                margin-bottom:5px;
+                }
+
+            </style>
+
+    </head>
 
     <script src="http://127.0.0.1/socket.io/socket.io.js"></script>
     <script>
+        var processes = [];
+        var started = false;
+
         var socket = io.connect('http://localhost');
+        socket.on('init', function(data){
+            createPage(data);
+            });
         socket.on('recall', function(data){
-            console.log(data);
+            refreshPage(data)
+            });
+
+    function createPage (data){
+         console.log("Creating");
+         // Get that shit into an array
+            for(things in data){
+                processes.push(data[things]);
+            };
+            
+            console.log(processes)
+
+            processes.forEach( function(element, index) {
+                var processName = element["Name"];
+                var innerStuff = element["Data"];
+                var opStat = element["Status"];
+            
+                // Create the elements
+                
+                var Title = document.createElement('h2');
+                    Title.setAttribute('id', processName + 'TITLE');
+                    Title.innerHTML = processName
+
+                var Stat = document.createElement('h3');
+                    Stat.setAttribute('id', processName + 'STAT');
+                    Stat.innerHTML = opStat
+
+                var li = document.createElement('li');
+                    li.setAttribute('id', processName + 'DATA')
+                    li.innerHTML = innerStuff;
+
+                var ul = document.createElement('ul');
+                    ul.setAttribute('id', processName + 'UL' )
+                    ul.appendChild(li);
+
+                var div = document.createElement('div');
+                    div.setAttribute('class', 'box');
+                    div.setAttribute('id', processName + 'DIV' )
+                    div.appendChild(ul);
+
+                // Add the elements
+                    document.body.appendChild(Title);
+                    document.body.appendChild(Stat);
+                    document.body.appendChild(div);
+                    document.body.appendChild(document.createElement('br'));
+            
         });
+        started = true;
+    };
+
+        function refreshPage(data){
+            if(!(started)){
+                createPage(data)
+            }
+
+            processes.length = 0;
+            console.log("Refreshing");
+            for(things in data){
+                console.log("data: ");
+                console.log(data[things]);
+                processes.push(things);
+            }
+            console.log(processes)
+
+            processes.forEach( function(element, index){
+                console.log(data);
+                var processName = element;
+                var innerStuff = data[element]["Data"];
+                var opStat = data[element]["Status"];
+                console.log(processName + 'TITLE');
+                console.log(processName + 'STAT');
+                console.log(processName + 'DATA');
+                // change Title
+                document.getElementById(processName + 'TITLE').innerHTML = processName;
+                // update Status
+                document.getElementById(processName + 'STAT').innerHTML = opStat;
+                // update innerData
+                document.getElementById(processName + 'DATA').innerHTML = innerStuff;
+                });
+            }
 
     </script>
+    <body>
+        <h1>Irvin's Node App Spawner</h1>
+    </body>
 
 </html>
 
