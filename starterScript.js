@@ -15,15 +15,15 @@
  *  
  * ------------- Change Log ---------------------------
  *
- *
- *  Version 0.0.4 
- *      Initial Commit
- *
  *  Version 0.0.5
  *      Optimization in socket broadcast. Only broadcasts if there is atleast
  *      one client connected. If multiple clients are connected, broadcast 
  *      socket is NOT duplicated. When all clients disconnect, the broadcast 
  *      is removed
+ *
+ *  Version 0.0.4 
+ *      Initial Commit
+ *
  */
 
 
@@ -44,7 +44,10 @@ app.use(express.static(__dirname + '/public'));
 
 // This is supposed to be a blocking operation. Don't start anything till this finishes!
 var scriptToBeRun = fs.readFileSync('scripts.txt').toString().split("\n");
+console.log(scriptToBeRun);
+scriptToBeRun.shift() // Remove first element, which holds instructions
 scriptToBeRun.pop() // Get rid of the blank spot at the end
+
 
 var numScripts = scriptToBeRun.length;
 var index = 0
@@ -54,8 +57,8 @@ console.log(scriptToBeRun)
 
 
 for(var i = 0; i < numScripts ; i++){
-
-    runningScripts[i] = spawn('python', ['-u',scriptToBeRun[i] ]); //Creates the scripts
+    
+    runningScripts[i] = spawn('python', ['-u', scriptToBeRun[i]]); //Creates the scripts
 
     Statuses[scriptToBeRun[i]] =  {"Name" : scriptToBeRun[i], "PID" : runningScripts[i].pid};
 
