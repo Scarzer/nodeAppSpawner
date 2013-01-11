@@ -38,7 +38,7 @@ var express = require('express'),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server);
 
-server.listen(80)
+server.listen(8080)
 // serve the files using express framework
 app.use(express.static(__dirname + '/public'));
 
@@ -122,7 +122,7 @@ io.sockets.on("connection", function(socket){
 
 function stdOutCallback(index, json_Stats, scriptsList){
     return function(data){
-        Statuses[scriptsList[index]]["Data"] = data.toString().replace('\n','').trim();
+        Statuses[scriptsList[index]]["Data"] = data.toString().trim();
         Statuses[scriptsList[index]]["Status"] = "Operational" 
 
     // Test to see how it actually works / what am I seeing

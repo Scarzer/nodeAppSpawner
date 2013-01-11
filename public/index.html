@@ -23,8 +23,8 @@
                 left : 5%;
                 bottom : 10px;
                 list-style-type:none;
-                width:400px;
-                height:90px;
+                width:600px;
+                height:150px;
                 overflow:auto;
                 border:1px solid #999;
                 padding:20px;
@@ -41,7 +41,7 @@
 
     </head>
 
-    <script src="http://127.0.0.1/socket.io/socket.io.js"></script>
+    <script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>
     <script>
         var processes = [];
         var started = false;
@@ -65,7 +65,8 @@
 
             processes.forEach( function(element, index) {
                 var processName = element["Name"];
-                var innerStuff = element["Data"].split('\n');
+                var innerStuff = element["Data"];
+				var error = element["Error"]
                 var opStat = element["Status"];
             
                 // Create the elements
@@ -80,8 +81,13 @@
 
                 var li = document.createElement('p');
                     li.setAttribute('id', processName + 'DATA')
-                    li.innerHTML = innerStuff;
-
+					if(innerStuff === undefined){
+						li.innerHTML = error.replace('\n', '<br />')
+					}
+					else{
+                    	li.innerHTML = innerStuff.replace('\n','<br />');
+					}
+					
                 var ul = document.createElement('ul');
                     ul.setAttribute('id', processName + 'UL' )
                     ul.appendChild(li);
@@ -118,6 +124,7 @@
                 console.log(data);
                 var processName = element;
                 var innerStuff = data[element]["Data"];
+				var error = data[element]["Error"]
                 var opStat = data[element]["Status"];
                 console.log(processName + 'TITLE');
                 console.log(processName + 'STAT');
@@ -127,8 +134,13 @@
                 // update Status
                 document.getElementById(processName + 'STAT').innerHTML = opStat;
                 // update innerData
-                document.getElementById(processName + 'DATA').innerHTML = innerStuff.replace('\n',"<br />");
-                });
+				if(innerStuff === undefined){
+					document.getElementById(processName + 'DATA').innerHTML = error
+					}
+				else{
+                	document.getElementById(processName + 'DATA').innerHTML = innerStuff.replace('\n',"<br />");
+                    }
+				});
             }
 
     </script>
